@@ -70,21 +70,39 @@ public class Test1 {
 			
 			newContent2 += (new String(oldContent2.substring(one, two)) + "\n");
 		}
-		
-		
-		
 		return newContent2;
+	}
+	
+	public static void writeHtml(String url1, String fileName1)
+	{
+		try 
+		{
+			URL url = new URL(url1);
+			URLConnection con = url.openConnection();
+	        InputStream is = con.getInputStream();
+	        BufferedReader br = new BufferedReader(new InputStreamReader(is));
+	        String line = null;
+	        PrintWriter writer = new PrintWriter(fileName1 + ".txt");
+	        while ((line = br.readLine()) != null) 
+	        {
+	            writer.println(line);
+	        }
+	        writer.close();
+		}catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+		}
 	}
 	
 	public static void main(String[] args)
 	{
 		String totalContent = "";
-		String urlStr = "https://www.reddit.com/r/wow/" ;
+		String urlStr1 = "https://www.reddit.com/r/wow/" ;
 		String urlStr2 = "https://www.reddit.com/search?q=classicwow";
 		String urlStr3 = "https://www.reddit.com/";
 		String urlStr4 = "https://www.reddit.com/r/AskReddit/";
-
 		String urlStr5 = "https://pace.math.colostate.edu/courses.html";
+		String chosenString = urlStr1;
 		try
 		{
 			/* THIS CODE IS FROM  
@@ -92,48 +110,49 @@ public class Test1 {
 			*/
 			{
 		        // Make a URL to the web page
-		        URL url = new URL(urlStr4);
-
+		        URL url = new URL(chosenString);
 		        // Get the input stream through URL Connection
 		        URLConnection con = url.openConnection();
 		        InputStream is = con.getInputStream();
-
 		        // Once you have the Input Stream, it's just plain old Java IO stuff.
-
 		        // For this case, since you are interested in getting plain-text web page
 		        // I'll use a reader and output the text content to System.out.
-
 		        // For binary content, it's better to directly read the bytes from stream and write
 		        // to the target file.
-
-
 		        BufferedReader br = new BufferedReader(new InputStreamReader(is));
-
 		        String line = null;
-
+		        PrintWriter writer = new PrintWriter("htmlSource.txt");
 		        // read each line and write to System.out
 		        while ((line = br.readLine()) != null) {
 		            //System.out.println(line);
 		            totalContent += (line + "/n");
+		            writer.println(line);
 		        }
-				
+		        writer.close();
+		        //System.out.println("TOTAL CONTENT" + totalContent);
 			}		
 		}catch(Exception e)
 		{
 			System.out.println(e.getMessage());
-			System.out.println("Yo that's not a webpage");
+			// System.out.println("Yo that's not a webpage");
 		}
+		
+		
+		/*
+		 * Testing the grabMethods below 
+		 */
 		System.out.println(grabH2(totalContent));
 		File page = new File("askRedditPage");
 		String pageStr = "";
 		
 		Scanner sc = null;
 		try {
-		sc = new Scanner(new File("askRedditPage"));
+			sc = new Scanner(new File("askRedditPage"));
 		}catch(Exception e)
 		{
 			System.out.println(e.getMessage());
 		}
+		
 		while(sc.hasNextLine())
 		{
 			pageStr += (sc.nextLine() + "/n");
@@ -156,5 +175,7 @@ public class Test1 {
 			both.add(curr);
 		}
 		System.out.println(both);
+		
+		writeHtml(urlStr5, "paceMathHomeHTML");
 	}
 }
